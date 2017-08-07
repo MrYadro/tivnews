@@ -84,7 +84,7 @@ func main() {
 				articleTime := article.PublishedParsed.Unix()
 
 				if articleTime > lastTime {
-					text := fmt.Sprintf("t.me/iv?url=%s&rhash=%s", article.Link, feedCfg.Ivid)
+					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, feedCfg.Ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
 					bot.Send(msg)
 				}
