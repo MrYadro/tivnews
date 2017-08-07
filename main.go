@@ -70,6 +70,7 @@ func main() {
 		config := loadConfig()
 
 		lastTime := loadLastTime()
+		saveLastTime()
 
 		bot, err := tgbotapi.NewBotAPI(config.Tgtoken)
 		if err != nil {
@@ -83,14 +84,14 @@ func main() {
 
 				articleTime := article.PublishedParsed.Unix()
 
-				if articleTime > lastTime {
+				if articleTime >= lastTime {
+					fmt.Println(articleTime)
 					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, feedCfg.Ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
 					bot.Send(msg)
 				}
 			}
 		}
-		saveLastTime()
-		time.Sleep(time.Minute * 1)
+		time.Sleep(time.Minute * 5)
 	}
 }
