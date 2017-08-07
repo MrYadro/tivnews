@@ -1,0 +1,11 @@
+{
+  "feeds": [
+    {
+      "name": "Feed name",
+      "ivid": "nope",
+      "url": "example.com/rss.xml"
+    }
+  ],
+  "tgtoken": "your token",
+  "tgchatid": -123
+}
