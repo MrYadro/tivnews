@@ -79,13 +79,15 @@ func main() {
 
 		for _, feedCfg := range config.Feeds {
 			fp := gofeed.NewParser()
-			feed, _ := fp.ParseURL(feedCfg.URL)
+			feed, err := fp.ParseURL(feedCfg.URL)
+			if err != nil {
+				continue
+			}
 			for _, article := range feed.Items {
 
 				articleTime := article.PublishedParsed.Unix()
 
 				if articleTime >= lastTime {
-					fmt.Println(articleTime)
 					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, feedCfg.Ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
 					bot.Send(msg)
