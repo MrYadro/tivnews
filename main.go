@@ -42,10 +42,11 @@ func loadConfig() feedConfig {
 	return jsonobject
 }
 
-func loadLastTime() int64 {
-	file, err := os.Open("lasttime")
+func loadLastTime(hash string) int64 {
+	file, err := os.Open(hash)
 	if err != nil {
-		log.Fatal(err)
+		saveLastTime(hash)
+		log.Print(err)
 	}
 	defer file.Close()
 
@@ -56,8 +57,8 @@ func loadLastTime() int64 {
 	return lastTime
 }
 
-func saveLastTime() {
-	file, err := os.Create("lasttime")
+func saveLastTime(hash string) {
+	file, err := os.Create(hash)
 	if err != nil {
 		log.Fatal("Cannot create file", err)
 	}
@@ -68,9 +69,6 @@ func saveLastTime() {
 func main() {
 	for {
 		config := loadConfig()
-
-		lastTime := loadLastTime()
-		saveLastTime()
 
 		bot, err := tgbotapi.NewBotAPI(config.Tgtoken)
 		if err != nil {
@@ -83,12 +81,16 @@ func main() {
 			if err != nil {
 				continue
 			}
-			for _, article := range feed.Items {
-
+			ivid := feedCfg.Ivid
+			lastTime := loadLastTime(ivid)
+			for i, article := range feed.Items {
+				if i == 0 {
+					saveLastTime(ivid)
+				}
 				articleTime := article.PublishedParsed.Unix()
 
 				if articleTime >= lastTime {
-					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, feedCfg.Ivid)
+					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
 					bot.Send(msg)
 				}
