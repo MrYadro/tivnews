@@ -45,7 +45,7 @@ func loadConfig() feedConfig {
 func loadLastTime(hash string) int64 {
 	file, err := os.Open(hash)
 	if err != nil {
-		saveLastTime(hash)
+		saveLastTime(hash, time.Now())
 		log.Print(err)
 	}
 	defer file.Close()
@@ -57,13 +57,13 @@ func loadLastTime(hash string) int64 {
 	return lastTime
 }
 
-func saveLastTime(hash string) {
+func saveLastTime(hash string, timer time.Time) {
 	file, err := os.Create(hash)
 	if err != nil {
 		log.Fatal("Cannot create file", err)
 	}
 	defer file.Close()
-	fmt.Fprintf(file, "%d\n", time.Now().Unix())
+	fmt.Fprintf(file, "%d\n", timer.Unix())
 }
 
 func main() {
@@ -85,7 +85,7 @@ func main() {
 			lastTime := loadLastTime(ivid)
 			for i, article := range feed.Items {
 				if i == 0 {
-					saveLastTime(ivid)
+					saveLastTime(ivid, *article.PublishedParsed)
 				}
 				articleTime := article.PublishedParsed.Unix()
 
