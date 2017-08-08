@@ -47,6 +47,7 @@ func loadLastTime(hash string) int64 {
 	if err != nil {
 		saveLastTime(hash, time.Now())
 		log.Print(err)
+		return time.Now().Unix()
 	}
 	defer file.Close()
 
@@ -89,7 +90,7 @@ func main() {
 				}
 				articleTime := article.PublishedParsed.Unix()
 
-				if articleTime >= lastTime {
+				if articleTime > lastTime {
 					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
 					bot.Send(msg)
