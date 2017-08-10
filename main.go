@@ -91,8 +91,9 @@ func main() {
 				articleTime := article.PublishedParsed.Unix()
 
 				if articleTime > lastTime {
-					text := fmt.Sprintf("https://t.me/iv?url=%s&rhash=%s", article.Link, ivid)
+					text := fmt.Sprintf("[Visit article page](https://t.me/iv?url=%s&rhash=%s)", article.Link, ivid)
 					msg := tgbotapi.NewMessage(config.Tgchatid, text)
+					msg.ParseMode = tgbotapi.ModeMarkdown
 					bot.Send(msg)
 				}
 			}
