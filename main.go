@@ -73,7 +73,7 @@ func main() {
 
 		bot, err := tgbotapi.NewBotAPI(config.Tgtoken)
 		if err != nil {
-			log.Panic(err)
+			continue
 		}
 
 		for _, feedCfg := range config.Feeds {
